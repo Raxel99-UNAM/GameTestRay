@@ -34,6 +34,28 @@ class ArcadeGameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         
+        
+        // Iterate through all nodes in the scene
+        // Iterate through all nodes in the scene
+        self.children.forEach { node in
+            // Check if the node is an asteroid
+            if let asteroid = node as? SKSpriteNode, asteroid.name == "asteroid" {
+                // Calculate the boundaries of the asteroid sprite
+                let asteroidMinX = asteroid.position.x - asteroid.size.width / 2
+                let asteroidMaxX = asteroid.position.x + asteroid.size.width / 2
+                let asteroidMinY = asteroid.position.y - asteroid.size.height / 2
+                let asteroidMaxY = asteroid.position.y + asteroid.size.height / 2
+
+                // Check if the entire asteroid sprite is off-screen
+                if asteroidMaxX < 0 || asteroidMinX > self.frame.width ||
+                   asteroidMaxY < 0 || asteroidMinY > self.frame.height {
+                    // Remove the asteroid from the scene
+                    asteroid.removeFromParent()
+                }
+            }
+        }
+        
+        
         // ...
         
         if isMovingToTheRight{
@@ -265,10 +287,10 @@ extension ArcadeGameScene {
 
         addChild(newAsteroid)
         
-        newAsteroid.run(SKAction.sequence([
-            SKAction.wait(forDuration: 5.0),
-            SKAction.removeFromParent()
-        ]))
+//        newAsteroid.run(SKAction.sequence([
+//            SKAction.wait(forDuration: 5.0),
+//            SKAction.removeFromParent()
+//        ]))
     }
 }
 
