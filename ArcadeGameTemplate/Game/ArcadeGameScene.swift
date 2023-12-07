@@ -112,7 +112,7 @@ extension ArcadeGameScene {
     
     func startAsteroidsCycle() {
         let createAsteroidAction = SKAction.run(createAsteroid)
-        let waitAction = SKAction.wait(forDuration: 1.0)
+        let waitAction = SKAction.wait(forDuration: 1.0) //Tiempo de espera de la creación de vacas
         
         let createAndWaitAction = SKAction.sequence([createAsteroidAction, waitAction])
         let asteroidCycleAction = SKAction.repeatForever(createAndWaitAction)
@@ -214,7 +214,7 @@ extension ArcadeGameScene {
     }
     
     private func randomAsteroidPosition() -> CGPoint {
-        let positionY = frame.height * 0.27
+        let positionY = frame.height * 0.275 // Altura donde las vacas serán creadas
         
         // Randomly choose left or right side
         let positionX: CGFloat
@@ -229,14 +229,25 @@ extension ArcadeGameScene {
 
     
     private func newAsteroid(at position: CGPoint) {
-        let newAsteroid = SKShapeNode(circleOfRadius: 25)
+        
+        //let newAsteroid = SKShapeNode(circleOfRadius: 25)
+        
+        let asteroidTexture = SKTexture(imageNamed: "Cow")
+        let newAsteroid = SKSpriteNode(texture: asteroidTexture)
+        
         newAsteroid.name = "asteroid"
-        newAsteroid.fillColor = SKColor.red
-        newAsteroid.strokeColor = SKColor.black
+        
+        //newAsteroid.fillColor = SKColor.red
+        //newAsteroid.strokeColor = SKColor.black
         
         newAsteroid.position = position
         
-        newAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 15.0)
+        newAsteroid.size = CGSize(width: 70, height: 70)
+        
+        //newAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 15.0)
+        //newAsteroid.physicsBody?.affectedByGravity = true
+        
+        newAsteroid.physicsBody = SKPhysicsBody(texture: asteroidTexture, size: newAsteroid.size)
         newAsteroid.physicsBody?.affectedByGravity = true
         
         newAsteroid.physicsBody?.categoryBitMask = PhysicsCategory.asteroid
@@ -244,10 +255,13 @@ extension ArcadeGameScene {
         newAsteroid.physicsBody?.collisionBitMask = PhysicsCategory.player | PhysicsCategory.floor
 
         
-        newAsteroid.physicsBody?.restitution = 0.5 // Adjust this value as needed
+        newAsteroid.physicsBody?.restitution = 0.5 // Adjust this value as needed to set the bounce
 
         let initialVelocityX: CGFloat = position.x > frame.midX ? -200 : 200 // Move left if on the right, right if on the left
         newAsteroid.physicsBody?.velocity = CGVector(dx: initialVelocityX, dy: 0)
+        
+        // Flip the image based on the direction of movement
+        newAsteroid.xScale = initialVelocityX > 0 ? 1.0 : -1.0
 
         addChild(newAsteroid)
         
