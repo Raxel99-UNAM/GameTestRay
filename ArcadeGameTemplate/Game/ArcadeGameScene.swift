@@ -112,7 +112,7 @@ extension ArcadeGameScene {
     
     func startAsteroidsCycle() {
         let createAsteroidAction = SKAction.run(createAsteroid)
-        let waitAction = SKAction.wait(forDuration: 3.0)
+        let waitAction = SKAction.wait(forDuration: 1.0)
         
         let createAndWaitAction = SKAction.sequence([createAsteroidAction, waitAction])
         let asteroidCycleAction = SKAction.repeatForever(createAndWaitAction)
@@ -214,12 +214,19 @@ extension ArcadeGameScene {
     }
     
     private func randomAsteroidPosition() -> CGPoint {
-
-        let positionX = frame.width - 50
-        let positionY = frame.height - 500
+        let positionY = frame.height * 0.27
+        
+        // Randomly choose left or right side
+        let positionX: CGFloat
+        if Bool.random() { // Randomly returns true or false
+            positionX = frame.width // Right side
+        } else {
+            positionX = 0 // Left side
+        }
         
         return CGPoint(x: positionX, y: positionY)
     }
+
     
     private func newAsteroid(at position: CGPoint) {
         let newAsteroid = SKShapeNode(circleOfRadius: 25)
@@ -239,9 +246,8 @@ extension ArcadeGameScene {
         
         newAsteroid.physicsBody?.restitution = 0.5 // Adjust this value as needed
 
-        // Set the initial velocity to move the asteroid to the left
-        let initialVelocity = CGVector(dx: -100, dy: 0) // Adjust the dx value as needed
-        newAsteroid.physicsBody?.velocity = initialVelocity
+        let initialVelocityX: CGFloat = position.x > frame.midX ? -200 : 200 // Move left if on the right, right if on the left
+        newAsteroid.physicsBody?.velocity = CGVector(dx: initialVelocityX, dy: 0)
 
         addChild(newAsteroid)
         
